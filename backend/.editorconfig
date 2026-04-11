@@ -1,0 +1,36 @@
+root = true
+
+[*.cs]
+dotnet_analyzer_diagnostic.category-Style.severity = warning
+csharp_new_line_before_open_brace = all
+
+dotnet_diagnostic.SA1600.severity = none
+dotnet_diagnostic.SA1633.severity = none
+dotnet_diagnostic.SA1101.severity = none
+dotnet_diagnostic.SA1200.severity = none
+dotnet_diagnostic.SA1010.severity = none
+dotnet_diagnostic.SA1009.severity = none
+dotnet_diagnostic.SA0001.severity = none
+dotnet_diagnostic.SA1206.severity = none
+dotnet_diagnostic.RCS1018.severity = suggestion  
+dotnet_diagnostic.IDE0008.severity = none
+dotnet_diagnostic.IDE0300.severity = none
+dotnet_diagnostic.SA1413.severity = none
+dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.IDE0046.severity = none
+dotnet_diagnostic.IDE0028.severity = none
+dotnet_diagnostic.SA1117.severity = none
+dotnet_diagnostic.SA1309.severity = none
+dotnet_diagnostic.SA1122.severity = none
+dotnet_diagnostic.SA1649.severity = none
+dotnet_diagnostic.SA1202.severity = none
+dotnet_diagnostic.CS1998.severity = none
+dotnet_diagnostic.IDE0090.severity = none
+dotnet_diagnostic.SA1005.severity = none
+
+dotnet_diagnostic.SA1313.severity = none
+dotnet_diagnostic.SA1201.severity = none
+dotnet_diagnostic.IDE0022.severity = none
+dotnet_diagnostic.SA1000.severity = none
+dotnet_diagnostic.IDE0305.severity = none
+dotnet_diagnostic.SA1402.severity = none
