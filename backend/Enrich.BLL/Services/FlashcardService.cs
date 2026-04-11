@@ -103,7 +103,8 @@ namespace Enrich.BLL.Services
                 Example = f.Example,
                 DifficultyLevel = f.DifficultyLevel,
                 CreatedAt = f.CreatedAt,
-                IsSaved = savedIds.Contains(f.Id)
+                IsSaved = savedIds.Contains(f.Id),
+                IsPersonal = f.CreatedById == userId
             });
         }
 
@@ -124,7 +125,8 @@ namespace Enrich.BLL.Services
                 Example = f.Example,
                 DifficultyLevel = f.DifficultyLevel,
                 CreatedAt = f.CreatedAt,
-                IsSaved = true
+                IsSaved = true,
+                IsPersonal = f.CreatedById == userId
             });
         }
 

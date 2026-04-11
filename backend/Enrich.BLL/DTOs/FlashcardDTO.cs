@@ -21,5 +21,7 @@ namespace Enrich.BLL.DTOs
         public DateTime CreatedAt { get; set; }
 
         public bool IsSaved { get; set; }
+
+        public bool IsPersonal { get; set; }
     }
 }

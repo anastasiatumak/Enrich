@@ -59,6 +59,17 @@ try
         options.ValidationInterval = TimeSpan.Zero;
     });
 
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.Events.OnRedirectToLogin = context =>
+        {
+            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+            return Task.CompletedTask;
+        };
+        options.Cookie.SameSite = SameSiteMode.Lax;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest;
+    });
+
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
     builder.Services.AddProblemDetails();
 
@@ -78,9 +89,7 @@ try
             "MobileAppPolicy",
             policy =>
             {
-                policy.WithOrigins(
-                        "http://localhost:8081", "https://localhost:8081",
-                        "http://192.168.0.106:8081", "https://192.168.0.106:8081") // Added LAN IP
+                policy.SetIsOriginAllowed(origin => true) // Allow any origin in development
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials(); // Critical for Identity cookies!
