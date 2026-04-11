@@ -9,31 +9,34 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { theme } from "../../../constants/theme";
 import { RootStackParamList } from "../../../navigation/RootNavigator";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-type LoginScreenNavigationProp = NativeStackNavigationProp<
+type RegisterScreenNavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  "Login"
+  "Register"
 >;
 
-export const LoginScreen = () => {
+export const RegisterScreen = () => {
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
   // Validation state
   const [emailError, setEmailError] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-  const navigation = useNavigation<LoginScreenNavigationProp>();
-  const { login, error } = useAuthStore();
+  const navigation = useNavigation<RegisterScreenNavigationProp>();
+  const { register, error } = useAuthStore();
 
   const validate = () => {
     let isValid = true;
     setEmailError("");
+    setUsernameError("");
     setPasswordError("");
 
     if (!email) {
@@ -44,26 +47,36 @@ export const LoginScreen = () => {
       isValid = false;
     }
 
+    if (!username) {
+      setUsernameError("Username is required");
+      isValid = false;
+    } else if (username.length < 3) {
+      setUsernameError("Username must be at least 3 characters");
+      isValid = false;
+    }
+
     if (!password) {
       setPasswordError("Password is required");
+      isValid = false;
+    } else if (password.length < 6) {
+      setPasswordError("Password must be at least 6 characters");
       isValid = false;
     }
 
     return isValid;
   };
 
-  const handleLogin = async () => {
+  const handleRegister = async () => {
     if (!validate()) return;
-    
     setLoading(true);
-    await login(email, password);
+    await register(email, username, password);
     setLoading(false);
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Log in to Enrich</Text>
+        <Text style={styles.title}>Sign up to Enrich</Text>
 
         {error && <Text style={styles.errorText}>{error}</Text>}
 
@@ -79,7 +92,24 @@ export const LoginScreen = () => {
               autoCapitalize="none"
               keyboardType="email-address"
             />
-            {emailError ? <Text style={styles.validationText}>{emailError}</Text> : null}
+            {emailError ? (
+              <Text style={styles.validationText}>{emailError}</Text>
+            ) : null}
+          </View>
+
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Username</Text>
+            <TextInput
+              style={[styles.input, usernameError ? styles.inputError : null]}
+              placeholder="Username"
+              placeholderTextColor={theme.colors.textSecondary}
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+            />
+            {usernameError ? (
+              <Text style={styles.validationText}>{usernameError}</Text>
+            ) : null}
           </View>
 
           <View style={styles.inputGroup}>
@@ -92,31 +122,39 @@ export const LoginScreen = () => {
               onChangeText={setPassword}
               secureTextEntry
             />
-            {passwordError ? <Text style={styles.validationText}>{passwordError}</Text> : null}
+            {passwordError ? (
+              <Text style={styles.validationText}>{passwordError}</Text>
+            ) : null}
           </View>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate("RestorePassword" as never)}
-          >
-            <Text style={styles.forgotPassword}>Forgot password?</Text>
-          </TouchableOpacity>
+          <Text style={[styles.footerText, { marginBottom: theme.spacing.xl }]}>
+            By creating an account, you agree to our{" "}
+            <Text style={styles.footerLink} onPress={() => {}}>
+              Terms of Service
+            </Text>{" "}
+            and{" "}
+            <Text style={styles.footerLink} onPress={() => {}}>
+              Privacy Policy
+            </Text>
+            .
+          </Text>
 
           <TouchableOpacity
             style={[styles.button, loading && styles.buttonDisabled]}
-            onPress={handleLogin}
+            onPress={handleRegister}
             disabled={loading}
           >
             {loading ? (
               <ActivityIndicator color={theme.colors.background} />
             ) : (
-              <Text style={styles.buttonText}>Log in</Text>
+              <Text style={styles.buttonText}>Sign up</Text>
             )}
           </TouchableOpacity>
 
           <View style={styles.footer}>
-            <Text style={styles.footerText}>New to Enrich? </Text>
-            <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-              <Text style={styles.footerLink}>Sign up</Text>
+            <Text style={styles.footerText}>Already have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+              <Text style={styles.footerLink}>Sign in</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -165,12 +203,13 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.sizes.small,
     marginTop: theme.spacing.xs,
   },
-  forgotPassword: {
-    fontSize: theme.typography.sizes.regular,
-    color: theme.colors.primary,
-    fontWeight: theme.typography.weights.medium,
+  termsText: {
+    fontSize: theme.typography.sizes.small,
+    color: theme.colors.text,
     marginBottom: theme.spacing.xl,
+    lineHeight: 18,
   },
+  termsLink: { textDecorationLine: "underline" },
   button: {
     backgroundColor: theme.colors.primary,
     padding: theme.spacing.m,
