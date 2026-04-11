@@ -15,18 +15,21 @@ namespace Enrich.BLL.Services
             var user = new User
             {
                 UserName = dto.Username,
-                Email = dto.Email
+                Email = dto.Email,
+                Role = "User",
+                CreatedAt = DateTime.UtcNow
             };
 
             var identityResult = await userManager.CreateAsync(user, dto.Password);
 
-            if (!identityResult.Succeeded)
+            if (identityResult.Succeeded)
             {
-                var errors = string.Join(", ", identityResult.Errors.Select(e => e.Description));
-                return errors;
+                await userManager.AddToRoleAsync(user, "User");
+                return true;
             }
 
-            return true;
+            var errors = string.Join(", ", identityResult.Errors.Select(e => e.Description));
+            return errors;
         }
 
         public async Task<Result> LoginAsync(LoginDTO dto)

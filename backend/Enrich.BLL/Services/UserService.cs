@@ -2,6 +2,7 @@ using System.Security.Claims;
 using Enrich.BLL.Common;
 using Enrich.BLL.DTOs;
 using Enrich.BLL.Interfaces;
+using Enrich.DAL.Data;
 using Enrich.DAL.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -11,6 +12,7 @@ namespace Enrich.BLL.Services
 {
     public class UserService(
         UserManager<User> userManager,
+        ApplicationDbContext dbContext,
         ILogger<UserService> logger) : IUserService
     {
         public async Task<Result> UpdateProfileAsync(int userId, UpdateProfileDTO profileDto)
@@ -68,6 +70,7 @@ namespace Enrich.BLL.Services
                 Id = u.Id,
                 Username = u.UserName ?? string.Empty,
                 Email = u.Email ?? string.Empty,
+                CreatedAt = u.CreatedAt,
                 IsLockedOut = u.LockoutEnd.HasValue && u.LockoutEnd > DateTimeOffset.UtcNow
             })];
         }
@@ -150,7 +153,8 @@ namespace Enrich.BLL.Services
             {
                 Id = user.Id,
                 Email = user.Email ?? string.Empty,
-                Username = user.UserName ?? string.Empty
+                Username = user.UserName ?? string.Empty,
+                CreatedAt = user.CreatedAt
             };
         }
 
@@ -163,6 +167,23 @@ namespace Enrich.BLL.Services
             }
 
             return null;
+        }
+
+        public async Task<IEnumerable<QuizAttemptDTO>> GetUserQuizHistoryAsync(int userId)
+        {
+            var attempts = await dbContext.QuizAttempts
+                .Where(qa => qa.UserId == userId)
+                .OrderByDescending(qa => qa.StartedAt ?? DateTime.MinValue)
+                .Select(qa => new QuizAttemptDTO
+                {
+                    Id = qa.Id,
+                    StartedAt = qa.StartedAt,
+                    FinishedAt = qa.FinishedAt,
+                    ScorePercentage = qa.ScorePercentage
+                })
+                .ToListAsync();
+
+            return attempts;
         }
     }
 }

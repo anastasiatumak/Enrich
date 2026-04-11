@@ -9,5 +9,7 @@ namespace Enrich.BLL.DTOs
         public string Email { get; set; } = null!;
 
         public bool IsLockedOut { get; set; }
+
+        public DateTime CreatedAt { get; set; }
     }
 }

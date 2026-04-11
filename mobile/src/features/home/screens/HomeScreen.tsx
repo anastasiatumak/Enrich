@@ -10,7 +10,7 @@ export const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.greeting}>Hello, {user?.name}!</Text>
+          <Text style={styles.greeting}>Hello, {user?.username}!</Text>
           <Text style={styles.email}>{user?.email}</Text>
         </View>
 

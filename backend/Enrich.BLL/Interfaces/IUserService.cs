@@ -16,5 +16,7 @@ namespace Enrich.BLL.Interfaces
         Task<UserDTO?> GetCurrentUserProfileAsync(System.Security.Claims.ClaimsPrincipal userPrincipal);
 
         int? GetCurrentUserId(System.Security.Claims.ClaimsPrincipal userPrincipal);
+
+        Task<IEnumerable<QuizAttemptDTO>> GetUserQuizHistoryAsync(int userId);
     }
 }

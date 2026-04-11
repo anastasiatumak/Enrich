@@ -71,6 +71,22 @@ try
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
 
+    // Configure CORS for mobile emulator / web dev
+    builder.Services.AddCors(options =>
+    {
+        options.AddPolicy(
+            "MobileAppPolicy",
+            policy =>
+            {
+                policy.WithOrigins(
+                        "http://localhost:8081", "https://localhost:8081",
+                        "http://192.168.0.106:8081", "https://192.168.0.106:8081") // Added LAN IP
+                      .AllowAnyHeader()
+                      .AllowAnyMethod()
+                      .AllowCredentials(); // Critical for Identity cookies!
+            });
+    });
+
     WebApplication app = builder.Build();
 
     await DataSeeder.SeedRolesAndAdminAsync(app.Services);
@@ -86,13 +102,14 @@ try
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+
+        // Skip HTTPS Redirection for Development to allow HTTP Android Emulator connections
     }
     else
     {
         app.UseHsts();
+        app.UseHttpsRedirection();
     }
-
-    app.UseHttpsRedirection();
 
     var localizationSettings = app.Configuration
         .GetSection(LocalizationSettings.Section)
@@ -106,6 +123,9 @@ try
     });
 
     app.UseRouting();
+
+    // Enable CORS right after routing and before Authentication!
+    app.UseCors("MobileAppPolicy");
 
     // Add Authentication and Authorization
     app.UseAuthentication();
