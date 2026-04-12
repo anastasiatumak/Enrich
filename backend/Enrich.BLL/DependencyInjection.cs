@@ -18,6 +18,7 @@ namespace Enrich.BLL
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IFlashcardService, FlashcardService>();
+            services.AddScoped<IQuizService, QuizService>();
 
             return services;
         }
