@@ -7,13 +7,20 @@ import { LoginScreen } from "../features/auth/screens/LoginScreen";
 import { RegisterScreen } from "../features/auth/screens/RegisterScreen";
 import { RestorePasswordScreen } from "../features/auth/screens/RestorePasswordScreen";
 import { MainTabNavigator } from "./MainTabNavigator";
+import { AddWordScreen } from "../features/words/screens/AddWordScreen";
+import { EditWordScreen } from "../features/words/screens/EditWordScreen";
+import { QuizScreen } from "../features/quiz/screens/QuizScreen";
 import { theme } from "../constants/theme";
+import { Flashcard } from "../store/useFlashcardStore";
 
 export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   RestorePassword: undefined;
   MainTabs: undefined;
+  AddWord: undefined;
+  EditWord: { flashcard: Flashcard };
+  Quiz: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -38,7 +45,12 @@ export const RootNavigator = () => {
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isAuthenticated ? (
           // Authenticated Stack
-          <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+          <Stack.Group>
+            <Stack.Screen name="MainTabs" component={MainTabNavigator} />
+            <Stack.Screen name="AddWord" component={AddWordScreen} />
+            <Stack.Screen name="EditWord" component={EditWordScreen} />
+            <Stack.Screen name="Quiz" component={QuizScreen} />
+          </Stack.Group>
         ) : (
           // Unauthenticated Stack
           <Stack.Group>

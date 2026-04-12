@@ -3,11 +3,11 @@ import {
   View,
   Text,
   StyleSheet,
-  SafeAreaView,
   TouchableOpacity,
   ScrollView,
   Alert,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuthStore } from "../../../store/useAuthStore";
 import { theme } from "../../../constants/theme";
 import { Ionicons } from "@expo/vector-icons";

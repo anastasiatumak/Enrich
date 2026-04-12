@@ -11,7 +11,7 @@ import { SettingsScreen } from "../features/settings/screens/SettingsScreen";
 export type MainTabParamList = {
   Saved: undefined;
   Words: undefined;
-  Profile: undefined;
+  Account: undefined;
   Settings: undefined;
 };
 
@@ -29,7 +29,7 @@ export const MainTabNavigator = () => {
             iconName = focused ? "bookmarks" : "bookmarks-outline";
           } else if (route.name === "Words") {
             iconName = focused ? "library" : "library-outline";
-          } else if (route.name === "Profile") {
+          } else if (route.name === "Account") {
             iconName = focused ? "person" : "person-outline";
           } else if (route.name === "Settings") {
             iconName = focused ? "settings" : "settings-outline";
@@ -55,7 +55,7 @@ export const MainTabNavigator = () => {
     >
       <Tab.Screen name="Saved" component={SavedScreen} />
       <Tab.Screen name="Words" component={WordsScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name="Account" component={ProfileScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />
     </Tab.Navigator>
   );

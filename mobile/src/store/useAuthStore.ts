@@ -75,7 +75,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   fetchUserProfile: async () => {
     try {
-      const response = await api.get("/users/me");
+      const response = await api.get("users/me");
       const userData = response.data;
       const userObj = {
         email: userData.email,
@@ -91,7 +91,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   fetchQuizHistory: async () => {
     try {
-      const response = await api.get("/users/me/history");
+      const response = await api.get("users/me/history");
       set({ quizHistory: response.data || [] });
     } catch (err) {
       console.warn("Failed to fetch quiz history", err);
@@ -102,7 +102,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ error: null });
       // Call the backend API to login (It will set an HTTP-only cookie on success)
-      const response = await api.post("/auth/login", {
+      const response = await api.post("auth/login", {
         email,
         password,
         rememberMe: true,
@@ -127,7 +127,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ error: null });
       // Call the backend API to register
-      await api.post("/auth/register", { email, username, password });
+      await api.post("auth/register", { email, username, password });
 
       const userObj = { email, username };
       await setStorageItem(USER_STORAGE_KEY, JSON.stringify(userObj));
@@ -144,7 +144,7 @@ export const useAuthStore = create<AuthState>((set) => ({
   logout: async () => {
     try {
       // Call the backend to clear the cookie
-      await api.post("/auth/logout");
+      await api.post("auth/logout");
     } catch (err) {
       console.warn("Failed to logout from server", err);
     } finally {
