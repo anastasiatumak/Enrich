@@ -66,10 +66,10 @@ export const AddWordScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
-          <Ionicons name="arrow-back" size={24} color="#000" />
+          <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Add new word</Text>
         <View style={{ width: 44 }} />
@@ -86,16 +86,18 @@ export const AddWordScreen = () => {
             value={word}
             onChangeText={setWord}
             placeholder="Word"
-            placeholderTextColor="#8E8E93"
+            placeholderTextColor={theme.colors.textSecondary}
           />
         </View>
 
-        <Dropdown 
-          label="Difficulty Level"
-          value={difficultyLevel}
-          options={DIFFICULTY_LEVELS}
-          onSelect={setDifficultyLevel}
-        />
+        <View style={styles.inputGroup}>
+          <Dropdown 
+            label="Difficulty Level"
+            value={difficultyLevel}
+            options={DIFFICULTY_LEVELS}
+            onSelect={setDifficultyLevel}
+          />
+        </View>
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Translation</Text>
@@ -104,16 +106,18 @@ export const AddWordScreen = () => {
             value={translation}
             onChangeText={setTranslation}
             placeholder="Translation"
-            placeholderTextColor="#8E8E93"
+            placeholderTextColor={theme.colors.textSecondary}
           />
         </View>
 
-        <Dropdown 
-          label="Part of Speech"
-          value={partOfSpeech}
-          options={PARTS_OF_SPEECH}
-          onSelect={setPartOfSpeech}
-        />
+        <View style={styles.inputGroup}>
+          <Dropdown 
+            label="Part of Speech"
+            value={partOfSpeech}
+            options={PARTS_OF_SPEECH}
+            onSelect={setPartOfSpeech}
+          />
+        </View>
 
         <View style={styles.inputGroup}>
           <Text style={styles.label}>Transcription</Text>
@@ -122,7 +126,7 @@ export const AddWordScreen = () => {
             value={transcription}
             onChangeText={setTranscription}
             placeholder="Transcription"
-            placeholderTextColor="#8E8E93"
+            placeholderTextColor={theme.colors.textSecondary}
           />
         </View>
 
@@ -133,7 +137,7 @@ export const AddWordScreen = () => {
             value={meaning}
             onChangeText={setMeaning}
             placeholder="Meaning"
-            placeholderTextColor="#8E8E93"
+            placeholderTextColor={theme.colors.textSecondary}
             multiline
           />
         </View>
@@ -145,7 +149,7 @@ export const AddWordScreen = () => {
             value={example}
             onChangeText={setExample}
             placeholder="Example"
-            placeholderTextColor="#8E8E93"
+            placeholderTextColor={theme.colors.textSecondary}
             multiline
           />
         </View>
@@ -159,7 +163,7 @@ export const AddWordScreen = () => {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color="#FFF" />
+              <ActivityIndicator color={theme.colors.background} />
             ) : (
               <Text style={styles.addBtnText}>Add</Text>
             )}
@@ -167,11 +171,12 @@ export const AddWordScreen = () => {
         </View>
       </ScrollView>
     </SafeAreaView>
+
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFFFFF' },
+  container: { flex: 1, backgroundColor: theme.colors.background },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -182,38 +187,62 @@ const styles = StyleSheet.create({
   backBtn: {
     padding: 8,
   },
-  headerTitle: { fontSize: 22, fontWeight: '700', color: '#1C2024' },
-  scrollContent: { paddingHorizontal: 24, paddingBottom: 40 },
-  inputGroup: { marginBottom: 20 },
-  label: { fontSize: 14, fontWeight: '600', color: '#444', marginBottom: 8 },
+  headerTitle: { 
+    fontSize: theme.typography.sizes.title, 
+    fontWeight: theme.typography.weights.bold, 
+    color: theme.colors.text 
+  },
+  scrollContent: { 
+    paddingHorizontal: theme.spacing.xl, 
+    paddingBottom: 40 
+  },
+  inputGroup: { 
+    marginBottom: theme.spacing.l 
+  },
+  label: { 
+    fontSize: theme.typography.sizes.regular, 
+    fontWeight: theme.typography.weights.medium, 
+    color: theme.colors.text, 
+    marginBottom: theme.spacing.xs 
+  },
   input: {
-    backgroundColor: '#EAEAEA',
+    backgroundColor: theme.colors.card,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
     paddingHorizontal: 16,
     height: 48,
-    fontSize: 14,
-    color: '#1C2024',
+    fontSize: theme.typography.sizes.regular,
+    color: theme.colors.text,
   },
   textArea: {
-    height: 80,
+    height: 100,
     textAlignVertical: 'top',
     paddingTop: 12,
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    marginTop: 20,
+    marginTop: theme.spacing.m,
+    marginBottom: theme.spacing.xl,
   },
   addBtn: {
-    backgroundColor: '#DEDEDE',
-    paddingHorizontal: 40,
-    paddingVertical: 12,
+    backgroundColor: theme.colors.primary,
+    height: 48,
     borderRadius: 8,
-    minWidth: 120,
     alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'stretch',
   },
   loadingBtn: { opacity: 0.7 },
-  addBtnText: { color: '#1C2024', fontWeight: 'bold', fontSize: 16 },
-  errorText: { color: theme.colors.error, marginBottom: 10, textAlign: 'center' }
+  addBtnText: { 
+    color: theme.colors.background, 
+    fontWeight: theme.typography.weights.bold, 
+    fontSize: theme.typography.sizes.regular 
+  },
+  errorText: { 
+    color: theme.colors.error, 
+    marginBottom: 10, 
+    textAlign: 'center',
+    fontSize: theme.typography.sizes.small 
+  }
 });
 

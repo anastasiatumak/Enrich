@@ -1,5 +1,6 @@
 import axios from 'axios';
 import Constants from 'expo-constants';
+import { useAuthStore } from '../store/useAuthStore';
 
 const getBaseUrl = () => {
   if (__DEV__) {
@@ -27,13 +28,26 @@ export const api = axios.create({
   },
 });
 
+api.interceptors.request.use(request => {
+  console.log('Sending request to:', request.baseURL, request.url);
+  return request;
+});
+
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     if (error.code === 'ECONNABORTED') {
       console.error('Request timed out. Check if your backend is running and reachable.');
     } else if (!error.response) {
       console.error('Network error. Check your internet connection or backend IP.');
+    } else if (error.response.status === 401) {
+      // If the backend returns 401 Unauthorized, automatically log the user out
+      // to clear stale frontend state.
+      console.log("401 Unauthorized received. Automatically logging out...");
+      const logout = useAuthStore.getState().logout;
+      
+      // Do not attempt to call the backend /logout endpoint if we are already unauthorized
+      await logout(true); 
     }
     return Promise.reject(error);
   }

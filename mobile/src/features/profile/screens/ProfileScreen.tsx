@@ -46,7 +46,7 @@ export const ProfileScreen = () => {
         },
         {
           text: "Log Out",
-          onPress: logout,
+          onPress: () => logout(),
           style: "destructive",
         },
       ]
@@ -54,10 +54,11 @@ export const ProfileScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
+      <View style={styles.header}>
         <Text style={styles.screenTitle}>Account</Text>
-
+      </View>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
         <View style={styles.profileCard}>
           <View style={styles.profileHeader}>
             <View style={styles.avatarContainer}>
@@ -113,12 +114,15 @@ export const ProfileScreen = () => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
+  header: { paddingTop: theme.spacing.m, paddingHorizontal: theme.spacing.xl },
+  content: { paddingBottom: theme.spacing.xxl },
   screenTitle: {
     fontSize: theme.typography.sizes.header,
+    fontWeight: theme.typography.weights.bold,
     color: theme.colors.text,
     textAlign: "center",
-    marginVertical: theme.spacing.xl,
-    fontWeight: theme.typography.weights.bold,
+    marginBottom: theme.spacing.xl,
+    marginTop: theme.spacing.s,
   },
   profileCard: {
     backgroundColor: theme.colors.grass3,

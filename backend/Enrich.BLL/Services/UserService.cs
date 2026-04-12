@@ -61,6 +61,60 @@ namespace Enrich.BLL.Services
             }
         }
 
+        public async Task<Result> UpdatePasswordAsync(int userId, UpdatePasswordDTO dto)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return "User not found.";
+            }
+
+            var changePasswordResult = await userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+
+            if (changePasswordResult.Succeeded)
+            {
+                return true;
+            }
+
+            return string.Join(", ", changePasswordResult.Errors.Select(e => e.Description));
+        }
+
+        public async Task<UserSettingsDTO> GetUserSettingsAsync(int userId)
+        {
+            var settings = await dbContext.UserSettings.FirstOrDefaultAsync(s => s.UserId == userId);
+
+            if (settings == null)
+            {
+                return new UserSettingsDTO { Theme = "System", Language = "English" };
+            }
+
+            return new UserSettingsDTO
+            {
+                Theme = settings.Theme ?? "System",
+                Language = settings.Language ?? "English"
+            };
+        }
+
+        public async Task<Result> UpdateUserSettingsAsync(int userId, UserSettingsDTO dto)
+        {
+            var settings = await dbContext.UserSettings.FirstOrDefaultAsync(s => s.UserId == userId);
+
+            if (settings == null)
+            {
+                settings = new UserSettings { UserId = userId, Theme = dto.Theme, Language = dto.Language };
+                dbContext.UserSettings.Add(settings);
+            }
+            else
+            {
+                settings.Theme = dto.Theme;
+                settings.Language = dto.Language;
+                dbContext.UserSettings.Update(settings);
+            }
+
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<UserDTO>> GetAllUsersAsync()
         {
             var users = await userManager.Users.ToListAsync();

@@ -22,7 +22,7 @@ export const HomeScreen = () => {
           </Text>
         </View>
 
-        <TouchableOpacity style={styles.logoutButton} onPress={logout}>
+        <TouchableOpacity style={styles.logoutButton} onPress={() => logout()}>
           <Text style={styles.logoutText}>Logout</Text>
         </TouchableOpacity>
       </View>

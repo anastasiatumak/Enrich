@@ -63,5 +63,17 @@ namespace Enrich.BLL.Services
         {
             await signInManager.SignOutAsync();
         }
+
+        public async Task<Result> RefreshSignInAsync(int userId)
+        {
+            var user = await userManager.FindByIdAsync(userId.ToString());
+            if (user == null)
+            {
+                return "User not found.";
+            }
+
+            await signInManager.RefreshSignInAsync(user);
+            return true;
+        }
     }
 }
