@@ -10,6 +10,7 @@ import { MainTabNavigator } from "./MainTabNavigator";
 import { AddWordScreen } from "../features/words/screens/AddWordScreen";
 import { EditWordScreen } from "../features/words/screens/EditWordScreen";
 import { QuizScreen } from "../features/quiz/screens/QuizScreen";
+import { SummaryScreen } from "../features/quiz/screens/SummaryScreen";
 import { theme } from "../constants/theme";
 import { Flashcard } from "../store/useFlashcardStore";
 
@@ -21,6 +22,7 @@ export type RootStackParamList = {
   AddWord: undefined;
   EditWord: { flashcard: Flashcard };
   Quiz: undefined;
+  QuizSummary: { correct: number; total: number; percentage: number };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -50,6 +52,7 @@ export const RootNavigator = () => {
             <Stack.Screen name="AddWord" component={AddWordScreen} />
             <Stack.Screen name="EditWord" component={EditWordScreen} />
             <Stack.Screen name="Quiz" component={QuizScreen} />
+            <Stack.Screen name="QuizSummary" component={SummaryScreen} />
           </Stack.Group>
         ) : (
           // Unauthenticated Stack
