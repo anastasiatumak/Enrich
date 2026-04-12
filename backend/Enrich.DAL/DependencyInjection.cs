@@ -17,6 +17,7 @@ namespace Enrich.DAL
 
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFlashcardRepository, FlashcardRepository>();
+            services.AddScoped<IQuizRepository, QuizRepository>();
 
             return services;
         }
