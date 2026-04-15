@@ -15,7 +15,7 @@ interface AuthState {
     username: string,
     password: string,
   ) => Promise<void>;
-  logout: () => Promise<void>;
+  logout: (skipBackendCall?: boolean) => Promise<void>;
   initialize: () => Promise<void>;
   fetchUserProfile: () => Promise<void>;
   fetchQuizHistory: () => Promise<void>;
@@ -102,16 +102,22 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       set({ error: null });
       // Call the backend API to login (It will set an HTTP-only cookie on success)
-      const response = await api.post("auth/login", {
+      await api.post("auth/login", {
         email,
         password,
         rememberMe: true,
       });
 
       // Assuming your backend responds with 200 OK on success
-      const userObj = { email }; // Save basic info
+      // We set a temporary userObj just to trigger isAuthenticated
+      const userObj = { email }; 
       await setStorageItem(USER_STORAGE_KEY, JSON.stringify(userObj));
       set({ isAuthenticated: true, user: userObj });
+      
+      // Fetch full profile to get the actual username, createdAt, etc.
+      // We use get() to access the current store methods
+      await useAuthStore.getState().fetchUserProfile();
+      
     } catch (err: any) {
       console.error("API Error Response:", err.response?.data || err.message);
       set({
@@ -141,15 +147,17 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  logout: async () => {
+  logout: async (skipBackendCall = false) => {
     try {
-      // Call the backend to clear the cookie
-      await api.post("auth/logout");
+      if (!skipBackendCall) {
+        // Call the backend to clear the cookie
+        await api.post("auth/logout");
+      }
     } catch (err) {
       console.warn("Failed to logout from server", err);
     } finally {
       await deleteStorageItem(USER_STORAGE_KEY);
-      set({ isAuthenticated: false, user: null });
+      set({ isAuthenticated: false, user: null, quizHistory: [] });
     }
   },
 }));

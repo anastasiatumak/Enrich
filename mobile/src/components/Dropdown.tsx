@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { theme } from '../constants/theme';
 
 interface DropdownProps {
   label: string;
@@ -25,13 +26,14 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
     <View style={styles.container}>
       {label && <Text style={styles.label}>{label}</Text>}
       <TouchableOpacity 
+        activeOpacity={0.7}
         style={styles.trigger} 
         onPress={() => setVisible(true)}
       >
         <Text style={[styles.triggerText, !value && styles.placeholder]}>
           {value || placeholder || 'Select option'}
         </Text>
-        <Ionicons name="chevron-down" size={20} color="#8E8E93" />
+        <Ionicons name="chevron-down" size={20} color={theme.colors.textSecondary} />
       </TouchableOpacity>
 
       <Modal
@@ -70,29 +72,30 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: 20,
+    marginBottom: theme.spacing.m,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#444',
-    marginBottom: 8,
+    fontSize: theme.typography.sizes.regular,
+    fontWeight: theme.typography.weights.medium,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
   },
   trigger: {
-    height: 48,
-    backgroundColor: '#EAEAEA',
+    backgroundColor: theme.colors.card,
+    padding: theme.spacing.m,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 16,
   },
   triggerText: {
-    fontSize: 14,
-    color: '#1C2024',
+    fontSize: theme.typography.sizes.regular,
+    color: theme.colors.text,
   },
   placeholder: {
-    color: '#8E8E93',
+    color: theme.colors.textSecondary,
   },
   modalOverlay: {
     flex: 1,
@@ -102,33 +105,36 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    backgroundColor: '#FFF',
+    backgroundColor: theme.colors.background,
     borderRadius: 16,
-    width: '100%',
+    width: '90%',
     maxHeight: '60%',
     padding: 20,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: theme.typography.sizes.large,
+    fontWeight: theme.typography.weights.bold,
     marginBottom: 16,
     textAlign: 'center',
+    color: theme.colors.text,
   },
   option: {
     paddingVertical: 14,
     borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
+    borderBottomColor: theme.colors.border,
   },
   selectedOption: {
-    backgroundColor: '#F5F5F7',
+    backgroundColor: theme.colors.card,
   },
   optionText: {
     fontSize: 16,
-    color: '#1C2024',
+    color: theme.colors.text,
     textAlign: 'center',
   },
   selectedOptionText: {
     fontWeight: 'bold',
-    color: '#007AFF', // Replaced primary color
+    color: theme.colors.primary,
   }
 });

@@ -37,9 +37,12 @@ export const useFlashcardStore = create<FlashcardState>((set, get) => ({
   fetchGlobalFlashcards: async () => {
     set({ isLoading: true, error: null });
     try {
+      console.log('Fetching global flashcards...');
       const response = await api.get<Flashcard[]>("flashcards/global");
+      console.log('Global flashcards response:', response.data.length, 'items');
       set({ globalFlashcards: response.data, isLoading: false });
     } catch (err: any) {
+      console.error('Error fetching global flashcards:', err.response?.data || err.message);
       set({ error: err.message, isLoading: false });
     }
   },
@@ -47,9 +50,12 @@ export const useFlashcardStore = create<FlashcardState>((set, get) => ({
   fetchPersonalFlashcards: async () => {
     set({ isLoading: true, error: null });
     try {
+      console.log('Fetching personal flashcards...');
       const response = await api.get<Flashcard[]>("flashcards/personal");
+      console.log('Personal flashcards response:', response.data.length, 'items');
       set({ personalFlashcards: response.data.map(f => ({ ...f, isSaved: true })), isLoading: false });
     } catch (err: any) {
+      console.error('Error fetching personal flashcards:', err.response?.data || err.message);
       set({ error: err.message, isLoading: false });
     }
   },

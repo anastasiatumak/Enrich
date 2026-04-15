@@ -10,5 +10,7 @@ namespace Enrich.BLL.Interfaces
         Task<Result> LoginAsync(LoginDTO dto);
 
         Task LogoutAsync();
+
+        Task<Result> RefreshSignInAsync(int userId);
     }
 }
