@@ -1,7 +1,8 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { theme } from "../constants/theme";
+import { useAppTheme } from "../constants/theme";
+import { useTranslation } from "react-i18next";
 
 import { SavedScreen } from "../features/saved/screens/SavedScreen";
 import { WordsScreen } from "../features/words/screens/WordsScreen";
@@ -18,6 +19,9 @@ export type MainTabParamList = {
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
 export const MainTabNavigator = () => {
+  const theme = useAppTheme();
+  const { t } = useTranslation();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -53,10 +57,26 @@ export const MainTabNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="Saved" component={SavedScreen} />
-      <Tab.Screen name="Words" component={WordsScreen} />
-      <Tab.Screen name="Account" component={ProfileScreen} />
-      <Tab.Screen name="Settings" component={SettingsScreen} />
+      <Tab.Screen 
+        name="Saved" 
+        component={SavedScreen} 
+        options={{ tabBarLabel: t("navigation.saved") }} 
+      />
+      <Tab.Screen 
+        name="Words" 
+        component={WordsScreen} 
+        options={{ tabBarLabel: t("navigation.home") }} 
+      />
+      <Tab.Screen 
+        name="Account" 
+        component={ProfileScreen} 
+        options={{ tabBarLabel: t("navigation.profile") }} 
+      />
+      <Tab.Screen 
+        name="Settings" 
+        component={SettingsScreen} 
+        options={{ tabBarLabel: t("navigation.settings") }} 
+      />
     </Tab.Navigator>
   );
 };

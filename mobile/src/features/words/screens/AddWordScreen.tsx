@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
-import { theme } from '../../../constants/theme';
+import { useAppTheme } from '../../../constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import { useFlashcardStore } from '../../../store/useFlashcardStore';
-
+import { useTranslation } from "react-i18next";
 import { Dropdown } from '../../../components/Dropdown';
 
 const DIFFICULTY_LEVELS = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2', 'Not Set'];
@@ -24,6 +24,8 @@ const PARTS_OF_SPEECH = [
 ];
 
 export const AddWordScreen = () => {
+  const theme = useAppTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const { createFlashcard, isLoading } = useFlashcardStore();
 
@@ -38,14 +40,12 @@ export const AddWordScreen = () => {
 
   const handleAdd = async () => {
     setError(null);
-    
-    // Validation
     if (!word.trim()) {
-      setError('Word field is required.');
+      setError(t("common.error")); // Basic validation
       return;
     }
     if (!translation.trim()) {
-      setError('Translation field is required.');
+      setError(t("common.error"));
       return;
     }
 
@@ -65,13 +65,15 @@ export const AddWordScreen = () => {
     }
   };
 
+  const styles = createStyles(theme);
+
   return (
     <SafeAreaView style={styles.container} edges={["top", "left", "right"]}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backBtn}>
           <Ionicons name="arrow-back" size={24} color={theme.colors.text} />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Add new word</Text>
+        <Text style={styles.headerTitle}>{t("wordForm.addTitle")}</Text>
         <View style={{ width: 44 }} />
       </View>
 
@@ -80,19 +82,19 @@ export const AddWordScreen = () => {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Word</Text>
+          <Text style={styles.label}>{t("wordForm.labels.word")}</Text>
           <TextInput
             style={styles.input}
             value={word}
             onChangeText={setWord}
-            placeholder="Word"
+            placeholder={t("wordForm.placeholders.word")}
             placeholderTextColor={theme.colors.textSecondary}
           />
         </View>
 
         <View style={styles.inputGroup}>
           <Dropdown 
-            label="Difficulty Level"
+            label={t("wordForm.labels.difficulty")}
             value={difficultyLevel}
             options={DIFFICULTY_LEVELS}
             onSelect={setDifficultyLevel}
@@ -100,19 +102,19 @@ export const AddWordScreen = () => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Translation</Text>
+          <Text style={styles.label}>{t("wordForm.labels.translation")}</Text>
           <TextInput
             style={styles.input}
             value={translation}
             onChangeText={setTranslation}
-            placeholder="Translation"
+            placeholder={t("wordForm.placeholders.translation")}
             placeholderTextColor={theme.colors.textSecondary}
           />
         </View>
 
         <View style={styles.inputGroup}>
           <Dropdown 
-            label="Part of Speech"
+            label={t("wordForm.labels.partOfSpeech")}
             value={partOfSpeech}
             options={PARTS_OF_SPEECH}
             onSelect={setPartOfSpeech}
@@ -120,35 +122,35 @@ export const AddWordScreen = () => {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Transcription</Text>
+          <Text style={styles.label}>{t("wordForm.labels.transcription")}</Text>
           <TextInput
             style={styles.input}
             value={transcription}
             onChangeText={setTranscription}
-            placeholder="Transcription"
+            placeholder={t("wordForm.placeholders.transcription")}
             placeholderTextColor={theme.colors.textSecondary}
           />
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Meaning</Text>
+          <Text style={styles.label}>{t("wordForm.labels.meaning")}</Text>
           <TextInput
             style={[styles.input, styles.textArea]}
             value={meaning}
             onChangeText={setMeaning}
-            placeholder="Meaning"
+            placeholder={t("wordForm.placeholders.meaning")}
             placeholderTextColor={theme.colors.textSecondary}
             multiline
           />
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Example</Text>
+          <Text style={styles.label}>{t("wordForm.labels.example")}</Text>
           <TextInput
             style={[styles.input, styles.textArea]}
             value={example}
             onChangeText={setExample}
-            placeholder="Example"
+            placeholder={t("wordForm.placeholders.example")}
             placeholderTextColor={theme.colors.textSecondary}
             multiline
           />
@@ -163,19 +165,18 @@ export const AddWordScreen = () => {
             disabled={isLoading}
           >
             {isLoading ? (
-              <ActivityIndicator color={theme.colors.background} />
+              <ActivityIndicator color="#FFFFFF" />
             ) : (
-              <Text style={styles.addBtnText}>Add</Text>
+              <Text style={styles.addBtnText}>{t("wordForm.buttons.save")}</Text>
             )}
           </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
-
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.background },
   header: {
     flexDirection: 'row',
@@ -197,7 +198,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40 
   },
   inputGroup: { 
-    marginBottom: theme.spacing.l 
+    marginBottom: theme.spacing.m
   },
   label: { 
     fontSize: theme.typography.sizes.regular, 
@@ -234,7 +235,7 @@ const styles = StyleSheet.create({
   },
   loadingBtn: { opacity: 0.7 },
   addBtnText: { 
-    color: theme.colors.background, 
+    color: "#FFFFFF", 
     fontWeight: theme.typography.weights.bold, 
     fontSize: theme.typography.sizes.regular 
   },

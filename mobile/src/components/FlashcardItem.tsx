@@ -1,8 +1,9 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { theme } from '../constants/theme';
+import { useAppTheme } from '../constants/theme';
 import { Flashcard } from '../store/useFlashcardStore';
+import { useTranslation } from "react-i18next";
 
 interface Props {
   flashcard: Flashcard;
@@ -13,6 +14,8 @@ interface Props {
 }
 
 export const FlashcardItem: React.FC<Props> = React.memo(({ flashcard, onToggleSave, onEdit, onDelete, variant = 'global' }) => {
+  const theme = useAppTheme();
+  const { t } = useTranslation();
   const [menuVisible, setMenuVisible] = useState(false);
   const [menuCoords, setMenuCoords] = useState({ bottom: 0, right: 0 });
   const triggerRef = useRef<View>(null);
@@ -21,12 +24,14 @@ export const FlashcardItem: React.FC<Props> = React.memo(({ flashcard, onToggleS
     triggerRef.current?.measureInWindow((x, y, width, height) => {
       const { height: windowHeight, width: windowWidth } = Dimensions.get('window');
       setMenuCoords({
-        bottom: windowHeight - y + 8, // slight offset to appear just above the icon
-        right: windowWidth - x - width, // aligns with the right edge of the icon
+        bottom: windowHeight - y + 8,
+        right: windowWidth - x - width,
       });
       setMenuVisible(true);
     });
   };
+
+  const styles = createStyles(theme);
 
   return (
     <View style={styles.card}>
@@ -46,10 +51,10 @@ export const FlashcardItem: React.FC<Props> = React.memo(({ flashcard, onToggleS
       <Text style={styles.transcription}>[{flashcard.transcription}]</Text>
 
       <View style={styles.details}>
-        <Text style={styles.label}>Meaning</Text>
+        <Text style={styles.label}>{t("common.meaning")}</Text>
         <Text style={styles.value}>{flashcard.meaning}</Text>
         
-        <Text style={styles.label}>Example</Text>
+        <Text style={styles.label}>{t("common.example")}</Text>
         <Text style={styles.value}>{flashcard.example}</Text>
       </View>
 
@@ -86,12 +91,11 @@ export const FlashcardItem: React.FC<Props> = React.memo(({ flashcard, onToggleS
                       style={styles.menuItem}
                       onPress={() => {
                         setMenuVisible(false);
-                        // Using setTimeout ensures the modal closing doesn't block the navigation transition
                         setTimeout(() => onEdit?.(flashcard), 0);
                       }}
                     >
                       <Ionicons name="pencil-outline" size={18} color={theme.colors.text} />
-                      <Text style={styles.menuItemText}>Edit</Text>
+                      <Text style={styles.menuItemText}>{t("common.edit")}</Text>
                     </TouchableOpacity>
                     
                     <View style={styles.menuDivider} />
@@ -104,7 +108,7 @@ export const FlashcardItem: React.FC<Props> = React.memo(({ flashcard, onToggleS
                       }}
                     >
                       <Ionicons name="trash-outline" size={18} color="#FF3B30" />
-                      <Text style={[styles.menuItemText, { color: '#FF3B30' }]}>Delete</Text>
+                      <Text style={[styles.menuItemText, { color: '#FF3B30' }]}>{t("common.delete")}</Text>
                     </TouchableOpacity>
                   </View>
                 </TouchableWithoutFeedback>
@@ -117,7 +121,7 @@ export const FlashcardItem: React.FC<Props> = React.memo(({ flashcard, onToggleS
   );
 });
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   card: {
     backgroundColor: theme.colors.card, 
     borderRadius: 12,
@@ -152,7 +156,7 @@ const styles = StyleSheet.create({
   },
   difficultyText: {
     fontSize: 10,
-    color: theme.colors.background,
+    color: "#FFFFFF",
     fontWeight: 'bold',
   },
   translation: {
@@ -200,7 +204,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   menuContainer: {
     position: 'absolute',

@@ -8,13 +8,16 @@ import {
   Alert
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { theme } from '../../../constants/theme';
+import { useAppTheme } from '../../../constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import { quizService, Flashcard, QuizAnswer } from '../../../services/quizService';
 import { QuizCard } from '../../../components/QuizCard';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { useTranslation } from "react-i18next";
 
 export const QuizScreen = () => {
+  const theme = useAppTheme();
+  const { t } = useTranslation();
   const navigation = useNavigation<any>();
   const [flashcards, setFlashcards] = useState<Flashcard[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -33,8 +36,8 @@ export const QuizScreen = () => {
       const data = await quizService.generateQuiz(10);
       if (data.length === 0) {
         Alert.alert(
-          "No saved words", 
-          "You need to save some words to start a quiz!",
+          t("common.error"), 
+          t("saved.emptyList"),
           [{ text: "OK", onPress: () => navigation.goBack() }]
         );
       } else {
@@ -42,7 +45,7 @@ export const QuizScreen = () => {
       }
     } catch (error) {
       console.error('Quiz load error:', error);
-      Alert.alert("Error", "Failed to load quiz words. Please check your connection.");
+      Alert.alert(t("common.error"), "Failed to load quiz words.");
       navigation.goBack();
     } finally {
       setLoading(false);
@@ -59,7 +62,6 @@ export const QuizScreen = () => {
       setIsFlipped(false);
       setCurrentIndex(currentIndex + 1);
     } else {
-      // End of quiz
       await finishQuiz(newAnswers);
     }
   };
@@ -85,8 +87,6 @@ export const QuizScreen = () => {
       });
     } catch (error) {
       console.error('Quiz submission error:', error);
-      Alert.alert("Warning", "Quiz finished but could not save results to cloud.");
-      // Still show summary even if save fails
       const correct = finalAnswers.filter(a => a.isKnown).length;
       navigation.replace('QuizSummary', {
         correct,
@@ -98,11 +98,12 @@ export const QuizScreen = () => {
     }
   };
 
+  const styles = createStyles(theme);
+
   if (loading && flashcards.length === 0) {
     return (
-      <View style={styles.centered}>
+      <View style={[styles.centered, { backgroundColor: theme.colors.background }]}>
         <ActivityIndicator size="large" color={theme.colors.primary} />
-        <Text style={styles.loadingText}>Preparing your quiz...</Text>
       </View>
     );
   }
@@ -134,14 +135,14 @@ export const QuizScreen = () => {
               style={[styles.btn, styles.didntKnowBtn]} 
               onPress={() => handleAnswer(false)}
             >
-              <Text style={styles.btnText}>Didn't know</Text>
+              <Text style={styles.didntKnowText}>{t("quiz.dontKnow")}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity 
               style={[styles.btn, styles.knewThatBtn]} 
               onPress={() => handleAnswer(true)}
             >
-              <Text style={styles.btnText}>Knew that!</Text>
+              <Text style={styles.knewThatText}>{t("quiz.knowWord")}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -149,17 +150,16 @@ export const QuizScreen = () => {
 
       {loading && (
         <View style={styles.overlay}>
-          <ActivityIndicator size="large" color="#FFF" />
+          <ActivityIndicator size="large" color={theme.colors.primary} />
         </View>
       )}
     </SafeAreaView>
   );
 };
 
-const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#FFF' },
+const createStyles = (theme: any) => StyleSheet.create({
+  container: { flex: 1, backgroundColor: theme.colors.background },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  loadingText: { marginTop: 12, color: theme.colors.textSecondary },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -178,26 +178,34 @@ const styles = StyleSheet.create({
   btn: {
     flex: 0.48,
     paddingVertical: 18,
-    borderRadius: 12,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
   },
   didntKnowBtn: {
-    backgroundColor: '#FFEBEE',
-    borderWidth: 1,
-    borderColor: '#FFCDD2',
+    backgroundColor: theme.isDark ? '#2A1A1A' : '#FFF5F5',
+    borderColor: theme.isDark ? '#4A2A2A' : '#FED7D7',
   },
   knewThatBtn: {
     backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
   },
-  btnText: {
+  didntKnowText: {
     fontWeight: 'bold',
-    fontSize: 16,
-    color: '#333',
+    fontSize: 14,
+    color: theme.isDark ? '#FF9999' : '#C53030',
+    textAlign: 'center',
+  },
+  knewThatText: {
+    fontWeight: 'bold',
+    fontSize: 14,
+    color: '#FFFFFF',
+    textAlign: 'center',
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     justifyContent: 'center',
     alignItems: 'center',
   }
