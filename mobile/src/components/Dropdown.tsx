@@ -9,7 +9,7 @@ import {
   TouchableWithoutFeedback 
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { theme } from '../constants/theme';
+import { useAppTheme } from '../constants/theme';
 
 interface DropdownProps {
   label: string;
@@ -21,6 +21,8 @@ interface DropdownProps {
 
 export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSelect, placeholder }) => {
   const [visible, setVisible] = useState(false);
+  const theme = useAppTheme();
+  const styles = createStyles(theme);
 
   return (
     <View style={styles.container}>
@@ -70,7 +72,7 @@ export const Dropdown: React.FC<DropdownProps> = ({ label, value, options, onSel
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     marginBottom: theme.spacing.m,
   },
@@ -99,19 +101,24 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
   },
   modalContent: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.colors.card,
     borderRadius: 16,
     width: '90%',
     maxHeight: '60%',
     padding: 20,
     borderWidth: 1,
     borderColor: theme.colors.border,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    elevation: 8,
   },
   modalTitle: {
     fontSize: theme.typography.sizes.large,
@@ -126,7 +133,7 @@ const styles = StyleSheet.create({
     borderBottomColor: theme.colors.border,
   },
   selectedOption: {
-    backgroundColor: theme.colors.card,
+    backgroundColor: theme.isDark ? '#2A2A2A' : '#F0F9F0',
   },
   optionText: {
     fontSize: 16,

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Animated } from 'react-native';
-import { theme } from '../constants/theme';
+import { useAppTheme } from '../constants/theme';
 import { Flashcard } from '../services/quizService';
+import { useTranslation } from "react-i18next";
 
 interface QuizCardProps {
   flashcard: Flashcard;
@@ -10,6 +11,8 @@ interface QuizCardProps {
 }
 
 export const QuizCard: React.FC<QuizCardProps> = ({ flashcard, isFlipped, onFlip }) => {
+  const theme = useAppTheme();
+  const { t } = useTranslation();
   const [flipAnimation] = useState(new Animated.Value(0));
 
   useEffect(() => {
@@ -38,13 +41,15 @@ export const QuizCard: React.FC<QuizCardProps> = ({ flashcard, isFlipped, onFlip
     transform: [{ rotateY: backInterpolate }],
   };
 
+  const styles = createStyles(theme);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity activeOpacity={1} onPress={onFlip} style={styles.cardContainer}>
         {/* Front Side */}
         <Animated.View style={[styles.card, styles.cardFront, frontAnimatedStyle, { opacity: isFlipped ? 0 : 1 }]}>
           <Text style={styles.wordText}>{flashcard.word}</Text>
-          <Text style={styles.tapHint}>Tap to reveal</Text>
+          <Text style={styles.tapHint}>{t("quiz.tapToReveal")}</Text>
         </Animated.View>
 
         {/* Back Side */}
@@ -53,7 +58,7 @@ export const QuizCard: React.FC<QuizCardProps> = ({ flashcard, isFlipped, onFlip
           {flashcard.meaning && <Text style={styles.meaningText}>{flashcard.meaning}</Text>}
           {flashcard.example && (
             <View style={styles.exampleContainer}>
-              <Text style={styles.exampleLabel}>Example:</Text>
+              <Text style={styles.exampleLabel}>{t("common.example")}:</Text>
               <Text style={styles.exampleText}>{flashcard.example}</Text>
             </View>
           )}
@@ -63,10 +68,10 @@ export const QuizCard: React.FC<QuizCardProps> = ({ flashcard, isFlipped, onFlip
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: {
     width: '100%',
-    height: 300,
+    height: 350,
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 20,
@@ -78,11 +83,11 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     height: '100%',
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#F5F5F7',
+    backgroundColor: theme.colors.card,
     backfaceVisibility: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
@@ -90,18 +95,17 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
     position: 'absolute',
+    borderWidth: 1,
+    borderColor: theme.colors.border,
   },
   cardFront: {
     zIndex: 1,
   },
   cardBack: {
     zIndex: 2,
-    backgroundColor: '#FFFFFF',
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
   },
   wordText: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: '700',
     color: theme.colors.text,
     textAlign: 'center',
@@ -128,8 +132,8 @@ const styles = StyleSheet.create({
   },
   exampleContainer: {
     width: '100%',
-    padding: 12,
-    backgroundColor: '#F9F9F9',
+    padding: 16,
+    backgroundColor: theme.isDark ? '#262626' : theme.colors.background,
     borderRadius: 12,
     marginTop: 'auto',
   },
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
   },
   exampleText: {
     fontSize: 14,
-    color: '#444',
+    color: theme.colors.text,
     fontStyle: 'italic',
     lineHeight: 20,
   },

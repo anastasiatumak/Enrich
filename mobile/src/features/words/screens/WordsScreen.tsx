@@ -14,11 +14,12 @@ import {
 } from 'react-native';
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from '@expo/vector-icons';
-import { theme } from '../../../constants/theme';
+import { useAppTheme } from '../../../constants/theme';
 import { useFlashcardStore } from '../../../store/useFlashcardStore';
 import { FlashcardItem } from '../../../components/FlashcardItem';
+import { useTranslation } from "react-i18next";
 
-type SortOrder = 'A-Z' | 'Z-A' | 'Hardest First' | 'Easiest First';
+type SortOrder = 'az' | 'za' | 'hardest' | 'easiest';
 
 const getDifficultyWeight = (level?: string | null) => {
   switch (level) {
@@ -28,11 +29,13 @@ const getDifficultyWeight = (level?: string | null) => {
     case 'B2': return 4;
     case 'C1': return 5;
     case 'C2': return 6;
-    default: return 0; // Not Set or null
+    default: return 0;
   }
 };
 
 export const WordsScreen = () => {
+  const theme = useAppTheme();
+  const { t } = useTranslation();
   const { 
     globalFlashcards, 
     isLoading, 
@@ -41,11 +44,11 @@ export const WordsScreen = () => {
   } = useFlashcardStore();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortOrder, setSortOrder] = useState<SortOrder>('A-Z');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('az');
   const [sortVisible, setSortVisible] = useState(false);
   const [sortCoords, setSortCoords] = useState({ top: 0, right: 0 });
   const sortBtnRef = useRef<View>(null);
-  const SORT_OPTIONS = ['A-Z', 'Z-A', 'Hardest First', 'Easiest First'];
+  const SORT_OPTIONS: SortOrder[] = ['az', 'za', 'hardest', 'easiest'];
 
   useEffect(() => {
     fetchGlobalFlashcards();
@@ -54,7 +57,6 @@ export const WordsScreen = () => {
   const filteredAndSortedWords = useMemo(() => {
     let result = [...globalFlashcards];
 
-    // Filter by search query
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -64,22 +66,21 @@ export const WordsScreen = () => {
       );
     }
 
-    // Sort by word
     result.sort((a, b) => {
-      if (sortOrder === 'A-Z') return a.word.localeCompare(b.word);
-      if (sortOrder === 'Z-A') return b.word.localeCompare(a.word);
+      if (sortOrder === 'az') return a.word.localeCompare(b.word);
+      if (sortOrder === 'za') return b.word.localeCompare(a.word);
       
       const weightA = getDifficultyWeight(a.difficultyLevel);
       const weightB = getDifficultyWeight(b.difficultyLevel);
       
-      if (sortOrder === 'Hardest First') {
+      if (sortOrder === 'hardest') {
         if (weightA === 0 && weightB !== 0) return 1;
         if (weightB === 0 && weightA !== 0) return -1;
         if (weightA !== weightB) return weightB - weightA;
         return a.word.localeCompare(b.word);
       }
       
-      if (sortOrder === 'Easiest First') {
+      if (sortOrder === 'easiest') {
         if (weightA === 0 && weightB !== 0) return 1;
         if (weightB === 0 && weightA !== 0) return -1;
         if (weightA !== weightB) return weightA - weightB;
@@ -103,16 +104,18 @@ export const WordsScreen = () => {
     });
   };
 
+  const styles = createStyles(theme);
+
   const renderHeader = () => (
     <View style={styles.headerContainer}>
-      <Text style={styles.screenTitle}>Words Library</Text>
+      <Text style={styles.screenTitle}>{t("library.title")}</Text>
       
       <View style={styles.searchRow}>
         <View style={styles.searchBar}>
           <Ionicons name="search" size={20} color={theme.colors.textSecondary} style={styles.searchIcon} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search"
+              placeholder={t("library.search")}
               placeholderTextColor={theme.colors.textSecondary}
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -126,7 +129,7 @@ export const WordsScreen = () => {
           <View ref={sortBtnRef}>
             <TouchableOpacity style={styles.sortBtn} onPress={handleOpenSort}>
               <Ionicons name="swap-vertical" size={20} color={theme.colors.text} />
-              <Text style={styles.sortText}>Sort by</Text>
+              <Text style={styles.sortText}>{t("library.sortBy")}</Text>
             </TouchableOpacity>
           </View>
 
@@ -146,12 +149,12 @@ export const WordsScreen = () => {
                           key={option}
                           style={[styles.dropdownItem, sortOrder === option && styles.activeDropdownItem]}
                           onPress={() => {
-                            setSortOrder(option as SortOrder);
+                            setSortOrder(option);
                             setSortVisible(false);
                           }}
                         >
                           <Text style={[styles.dropdownText, sortOrder === option && styles.activeDropdownText]}>
-                            {option}
+                            {t(`library.sort.${option}`)}
                           </Text>
                           {sortOrder === option && (
                             <Ionicons name="checkmark" size={18} color={theme.colors.primary} />
@@ -195,7 +198,7 @@ export const WordsScreen = () => {
           !isLoading ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>
-                {searchQuery ? "No words match your search." : "The library is empty."}
+                {searchQuery ? t("library.noResults") : t("library.empty")}
               </Text>
             </View>
           ) : null
@@ -210,7 +213,7 @@ export const WordsScreen = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const createStyles = (theme: any) => StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: theme.colors.background 
@@ -279,7 +282,7 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
   },
   dropdownMenu: {
     position: 'absolute',
@@ -303,7 +306,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   activeDropdownItem: {
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.isDark ? '#2A2A2A' : theme.colors.background,
   },
   dropdownText: {
     fontSize: theme.typography.sizes.regular,
@@ -326,6 +329,6 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: theme.isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255, 255, 255, 0.7)',
   }
 });

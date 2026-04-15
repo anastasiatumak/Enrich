@@ -1,0 +1,108 @@
+{
+  "common": {
+    "save": "Save changes",
+    "saving": "Saving...",
+    "success": "Success",
+    "error": "Error",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "meaning": "Meaning",
+    "example": "Example"
+  },
+  "settings": {
+    "title": "Settings",
+    "account": "Account Settings",
+    "security": "Security Settings",
+    "app": "App Settings",
+    "username": "Username",
+    "email": "Email",
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "theme": "Theme",
+    "language": "Language",
+    "updatePassword": "Update password",
+    "updating": "Updating...",
+    "selectTheme": "Select theme",
+    "selectLanguage": "Select language"
+  },
+  "navigation": {
+    "home": "Home",
+    "saved": "Saved",
+    "quiz": "Quiz",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "profile": {
+    "title": "Account",
+    "joined": "Joined",
+    "logout": "Log Out",
+    "logoutConfirmTitle": "Log Out",
+    "logoutConfirmMessage": "Are you sure you want to log out of your account?",
+    "quizHistory": "Quiz History",
+    "correct": "correct",
+    "emptyHistory": "You haven't completed any quizzes yet.",
+    "loadingDate": "Loading date..."
+  },
+  "library": {
+    "title": "Words Library",
+    "search": "Search",
+    "sortBy": "Sort by",
+    "sort": {
+      "az": "A-Z",
+      "za": "Z-A",
+      "hardest": "Hardest First",
+      "easiest": "Easiest First"
+    },
+    "noResults": "No words match your search.",
+    "empty": "The library is empty."
+  },
+  "saved": {
+    "title": "Saved Words",
+    "addNew": "Add new word",
+    "startQuiz": "Start a Quiz",
+    "noMatches": "No matches found.",
+    "emptyList": "Your saved list is empty."
+  },
+  "wordForm": {
+    "addTitle": "Add new word",
+    "editTitle": "Edit word",
+    "labels": {
+      "word": "Word",
+      "difficulty": "Difficulty Level",
+      "translation": "Translation",
+      "partOfSpeech": "Part of Speech",
+      "transcription": "Transcription",
+      "meaning": "Meaning",
+      "example": "Example"
+    },
+    "placeholders": {
+      "word": "Word",
+      "translation": "Translation",
+      "transcription": "Transcription",
+      "meaning": "Meaning",
+      "example": "Example"
+    },
+    "buttons": {
+      "save": "Save",
+      "saving": "Saving..."
+    }
+  },
+  "quiz": {
+    "title": "Quiz",
+    "tapToReveal": "Tap to reveal",
+    "knowWord": "I know this word",
+    "dontKnow": "I don't know this word",
+    "finish": "Finish Quiz",
+    "summary": {
+      "title": "Quiz Summary",
+      "score": "Your Score",
+      "correct": "Correct",
+      "incorrect": "Incorrect",
+      "backToLibrary": "Back to Library",
+      "amazing": "Amazing job! You're mastering these words.",
+      "good": "Good effort! Keep practicing to improve.",
+      "keepGoing": "Don't give up! Every session makes you better."
+    }
+  }
+}
